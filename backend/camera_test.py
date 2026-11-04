@@ -1,0 +1,31 @@
+import cv2
+import time
+
+CAMERA_INDEX = 1
+
+cap = cv2.VideoCapture(CAMERA_INDEX, cv2.CAP_DSHOW)
+if not cap.isOpened():
+    raise RuntimeError(f"เปิดกล้อง {CAMERA_INDEX} ไม่ได้")
+
+prev = time.time()
+
+while True:
+    ok, frame = cap.read()
+    if not ok:
+        print("อ่านภาพไม่ได้")
+        break
+
+    now = time.time()
+    fps = 1 / (now - prev)
+    prev = now
+
+    cv2.putText(frame, f"FPS: {fps:.1f}", (10, 30),
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+
+    cv2.imshow("camera", frame)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
