@@ -1,0 +1,23 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# โมเดลและข้อมูล (ไฟล์ใหญ่ ไม่เก็บใน Git)
+*.pt
+*.onnx
+*.engine
+runs/
+datasets/
+data/
+
+# Frontend
+node_modules/
+dist/
+
+# ความลับ
+.env
+
+# ระบบ
+.vscode/
+Thumbs.db
