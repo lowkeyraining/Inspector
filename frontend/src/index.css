@@ -1,40 +1,90 @@
 @import "tailwindcss";
 
+
+
 @theme {
+
   --color-brand:        #2167E8;
+
   --color-brand-soft:   #E8F1FF;
+
   --color-brand-border: #B6CDF7;
+
   --color-page:         #F7FAFF;
+
   --color-surface:      #FFFFFF;
+
   --color-subtle:       #F1F6FD;
+
   --color-line:         #ECF2F9;
+
   --color-ink:          #0E1327;
+
   --color-ink-body:     #3F4656;
+
   --color-ink-muted:    #6B7280;
 
+
+
   /* สีเตือนสำหรับค่าที่เกินเกณฑ์ ใช้ร่วมกันทุกการ์ดในหน้า Dashboard */
+
   --color-alert:        #E02424;
+
   --color-alert-soft:   #FDECEC;
 
+
+
   /* ชุดสีแบ่งหมวดของกราฟโดนัท ไล่เฉดจาก brand เพราะข้อมูลเรียงจากมากไปน้อยอยู่แล้ว */
+
   --color-cat-1:        #2167E8;
+
   --color-cat-2:        #5E9BF2;
+
   --color-cat-3:        #9CC3F8;
+
   --color-cat-4:        #CBDFFB;
+
 }
+
+
 
 @layer base {
   body {
     background-color: var(--color-page);
     color: var(--color-ink-body);
+
+    /*
+     * แดชบอร์ดนี้เป็นหน้าจอเฝ้าระวัง ไม่ใช่หน้าเอกสาร
+     * ปิดการลากคลุมข้อความและเคอร์เซอร์ I-beam ทั้งหน้า
+     * ไม่งั้นกดการ์ดหรือกดรัว ๆ แล้วตัวหนังสือจะโดนคลุมดำค้างไว้
+     * ส่วนที่ต้องเลือกได้จริง ปลดคืนด้านล่าง
+     */
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
-  /*
-   * กดปุ่มแล้วข้อความข้างในไม่ต้องถูกลากคลุมเป็นแถบน้ำเงิน
-   * ปุ่มมีไว้กด ไม่ได้มีไว้ให้คัดลอกข้อความ และการลากคลุมทำให้ดูเหมือนคลิกพลาด
-   * ใส่ที่นี่ที่เดียวแทนการไล่เติม select-none ทุกปุ่มใน styles.ts
-   */
-  button {
-    user-select: none;
+  /* ช่องกรอกต้องเลือกข้อความได้ตามปกติ ไม่งั้นแก้ค่าที่พิมพ์ไปแล้วลำบาก */
+  input,
+  textarea,
+  select,
+  [contenteditable] {
+    cursor: auto;
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  /* ค่าที่ผู้ใช้อาจอยากคัดลอกไปวางที่อื่น เช่น พิกัด bbox — ใส่ class นี้ที่ตัวมัน */
+  .selectable {
+    cursor: text;
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  /* Tailwind 4 ตั้ง cursor ของปุ่มเป็น default ตาม UA — ของที่กดได้ควรเป็นมือ */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  a[href] {
+    cursor: pointer;
   }
 }
