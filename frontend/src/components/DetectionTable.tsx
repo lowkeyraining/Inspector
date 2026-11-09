@@ -1,4 +1,7 @@
+// ตารางวัตถุที่ YOLO ตรวจเจอในเฟรมล่าสุด
+
 import type { Detection } from '../api/types'
+import { detectionTable as s } from '../lib/styles'
 
 type Props = {
   detections: Detection[]
@@ -6,28 +9,24 @@ type Props = {
 
 export default function DetectionTable({ detections }: Props) {
   if (detections.length === 0) {
-    return <p className="text-sm text-slate-500">ยังไม่พบวัตถุ</p>
+    return <p className={s.empty}>ยังไม่พบวัตถุ</p>
   }
 
   return (
-    <table className="w-full text-left text-sm">
+    <table className={s.table}>
       <thead>
-        <tr className="text-xs uppercase text-slate-500">
-          <th className="pb-2 font-medium">คลาส</th>
-          <th className="pb-2 text-right font-medium">ความมั่นใจ</th>
-          <th className="pb-2 text-right font-medium">bbox</th>
+        <tr className={s.headRow}>
+          <th className={s.th}>คลาส</th>
+          <th className={s.thRight}>ความมั่นใจ</th>
+          <th className={s.thRight}>bbox</th>
         </tr>
       </thead>
-      <tbody className="divide-y divide-slate-800">
+      <tbody className={s.body}>
         {detections.map((d, i) => (
-          <tr key={`${d.class}-${i}`} className="text-slate-300">
-            <td className="py-1.5">{d.class}</td>
-            <td className="py-1.5 text-right tabular-nums">
-              {(d.confidence * 100).toFixed(0)}%
-            </td>
-            <td className="py-1.5 text-right font-mono text-xs text-slate-500">
-              {d.bbox.join(', ')}
-            </td>
+          <tr key={`${d.class}-${i}`} className={s.row}>
+            <td className={s.td}>{d.class}</td>
+            <td className={s.tdRight}>{(d.confidence * 100).toFixed(0)}%</td>
+            <td className={s.tdBbox}>{d.bbox.join(', ')}</td>
           </tr>
         ))}
       </tbody>

@@ -1,3 +1,5 @@
+// กราฟแท่งนับจำนวนวัตถุที่ตรวจเจอแยกตามคลาส
+
 import {
   Bar,
   BarChart,
@@ -8,6 +10,8 @@ import {
   YAxis,
 } from 'recharts'
 import type { Detection } from '../api/types'
+import { chartBox, emptyHint } from '../lib/styles'
+import { chartColors } from '../lib/theme'
 
 type Props = {
   detections: Detection[]
@@ -25,17 +29,17 @@ export default function ClassCountChart({ detections }: Props) {
   const data = countByClass(detections)
 
   if (data.length === 0) {
-    return <p className="text-sm text-slate-500">ยังไม่มีข้อมูล</p>
+    return <p className={emptyHint}>ยังไม่มีข้อมูล</p>
   }
 
   return (
-    <div className="h-40">
+    <div className={chartBox}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
-          <CartesianGrid stroke="#1e293b" vertical={false} />
-          <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} />
+          <CartesianGrid stroke={chartColors.grid} vertical={false} />
+          <XAxis dataKey="name" stroke={chartColors.axis} fontSize={12} tickLine={false} />
           <YAxis
-            stroke="#64748b"
+            stroke={chartColors.axis}
             fontSize={12}
             width={32}
             allowDecimals={false}
@@ -44,13 +48,18 @@ export default function ClassCountChart({ detections }: Props) {
           />
           <Tooltip
             contentStyle={{
-              background: '#0f172a',
-              border: '1px solid #1e293b',
+              background: chartColors.surface,
+              border: `1px solid ${chartColors.grid}`,
               borderRadius: 8,
               fontSize: 12,
             }}
           />
-          <Bar dataKey="count" fill="#38bdf8" radius={[4, 4, 0, 0]} isAnimationActive={false} />
+          <Bar
+            dataKey="count"
+            fill={chartColors.series}
+            radius={[4, 4, 0, 0]}
+            isAnimationActive={false}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>

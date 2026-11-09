@@ -1,1 +1,31 @@
 @import "tailwindcss";
+
+@theme {
+  --color-brand:        #2167E8;
+  --color-brand-soft:   #E8F1FF;
+  --color-brand-border: #B6CDF7;
+  --color-page:         #F7FAFF;
+  --color-surface:      #FFFFFF;
+  --color-subtle:       #F1F6FD;
+  --color-line:         #ECF2F9;
+  --color-ink:          #0E1327;
+  --color-ink-body:     #3F4656;
+  --color-ink-muted:    #6B7280;
+
+  /* สีเตือนสำหรับค่าที่เกินเกณฑ์ ใช้ร่วมกันทุกการ์ดในหน้า Dashboard */
+  --color-alert:        #E02424;
+  --color-alert-soft:   #FDECEC;
+
+  /* ชุดสีแบ่งหมวดของกราฟโดนัท ไล่เฉดจาก brand เพราะข้อมูลเรียงจากมากไปน้อยอยู่แล้ว */
+  --color-cat-1:        #2167E8;
+  --color-cat-2:        #5E9BF2;
+  --color-cat-3:        #9CC3F8;
+  --color-cat-4:        #CBDFFB;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-page);
+    color: var(--color-ink-body);
+  }
+}

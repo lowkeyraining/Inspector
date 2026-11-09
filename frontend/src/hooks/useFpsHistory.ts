@@ -1,3 +1,5 @@
+// hook สะสมค่า FPS ย้อนหลังไว้ป้อนกราฟเส้น
+
 import { useEffect, useRef, useState } from 'react'
 
 export type FpsPoint = { t: number; fps: number }
