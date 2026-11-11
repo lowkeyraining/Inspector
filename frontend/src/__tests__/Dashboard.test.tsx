@@ -77,27 +77,51 @@ describe('Dashboard เมื่อมีข้อมูลแล้ว', () => 
     summary = testSummary
   })
 
-  it('กดสถานีใน rail แล้วแถวเดียวกันในกราฟซ้ายถูกไฮไลต์ด้วย', async () => {
+  it('กดสถานีใน rail แล้วสลับไปมุมมองของสถานีนั้น', async () => {
     renderDashboard()
 
     await userEvent.click(screen.getByRole('button', { name: '03 เชื่อม 2.1%' }))
 
-    // ทั้งสองการ์ดอ้างสถานีเดียวกัน จึงต้องมีปุ่มที่ aria-current สองอัน
+    expect(screen.getByText('Station 03 — เชื่อม')).toBeInTheDocument()
+    expect(screen.getByText(/Cycle time รายรอบ/)).toBeInTheDocument()
+    expect(screen.getByText('เหตุการณ์แยกชิ้นงานวันนี้ (3)')).toBeInTheDocument()
+
+    // การ์ดของภาพรวมทั้งไลน์ต้องหายไป ไม่ใช่ค้างอยู่ใต้มุมมองสถานี
+    expect(screen.queryByText('ประเภทปัญหาที่พบบ่อย')).not.toBeInTheDocument()
+    expect(screen.queryByText('แนวโน้มรายสัปดาห์')).not.toBeInTheDocument()
+  })
+
+  it('แถวของสถานีที่เลือกใน rail ยังถูกไฮไลต์อยู่', async () => {
+    renderDashboard()
+
+    await userEvent.click(screen.getByRole('button', { name: '03 เชื่อม 2.1%' }))
+
     const highlighted = screen
       .getAllByRole('button')
       .filter((b) => b.getAttribute('aria-current') === 'true')
 
-    expect(highlighted).toHaveLength(2)
-    for (const el of highlighted) {
-      expect(el.textContent).toContain('เชื่อม')
-    }
+    // เหลือ rail การ์ดเดียว เพราะกราฟเทียบรายสถานีไม่อยู่ในมุมมองนี้แล้ว
+    expect(highlighted).toHaveLength(1)
+    expect(highlighted[0].textContent).toContain('เชื่อม')
   })
 
-  it('กดภาพรวมทั้งหมดแล้วไม่มีสถานีไหนถูกไฮไลต์', async () => {
+  it('เลือกสถานีที่ยังไม่มีรายละเอียด แล้วบอกว่ารอข้อมูล ไม่ใช่หน้าว่าง', async () => {
+    renderDashboard()
+
+    await userEvent.click(screen.getByRole('button', { name: '01 ขึ้นรูป 0.8%' }))
+
+    expect(screen.getByText(/ยังไม่มีข้อมูลรายละเอียดของสถานีนี้/)).toBeInTheDocument()
+    expect(screen.getByText('Station 01 — ขึ้นรูป')).toBeInTheDocument()
+  })
+
+  it('กดภาพรวมทั้งหมดแล้วกลับไปมุมมองทั้งไลน์', async () => {
     renderDashboard()
 
     await userEvent.click(screen.getByRole('button', { name: '03 เชื่อม 2.1%' }))
     await userEvent.click(screen.getByRole('button', { name: /ภาพรวมทั้งหมด/ }))
+
+    expect(screen.getByText('ประเภทปัญหาที่พบบ่อย')).toBeInTheDocument()
+    expect(screen.queryByText(/Cycle time รายรอบ/)).not.toBeInTheDocument()
 
     const highlighted = screen
       .getAllByRole('button')
@@ -105,5 +129,15 @@ describe('Dashboard เมื่อมีข้อมูลแล้ว', () => 
 
     expect(highlighted).toHaveLength(1)
     expect(highlighted[0].textContent).toContain('ภาพรวมทั้งหมด')
+  })
+
+  it('กดสถานีในกราฟเทียบรายสถานี ก็เข้ามุมมองเดียวกัน', async () => {
+    renderDashboard()
+
+    // ปุ่มในกราฟฝั่งซ้ายกับใน rail ชื่อซ้ำกัน หยิบตัวแรกซึ่งคือกราฟ
+    const [chartRow] = screen.getAllByRole('button', { name: /03.*เชื่อม.*2\.1%/ })
+    await userEvent.click(chartRow)
+
+    expect(screen.getByText('Station 03 — เชื่อม')).toBeInTheDocument()
   })
 })

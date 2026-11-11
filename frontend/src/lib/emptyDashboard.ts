@@ -15,4 +15,5 @@ export const EMPTY_DASHBOARD: DashboardSummary = {
   stations: [],
   defectTypes: [],
   weekly: [],
+  stationDetails: [],
 }

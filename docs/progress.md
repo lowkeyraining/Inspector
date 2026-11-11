@@ -51,9 +51,27 @@
 - `Dashboard` ประกอบทั้งหมด แชร์ `selectedStationId` ระหว่างกราฟซ้ายกับ rail
   และขึ้นโครงการ์ดเปล่าระหว่างโหลดเพื่อไม่ให้ layout กระโดด
 
+### Frontend — มุมมองราย Station บนหน้า Dashboard
+
+ทำตาม [prototype/02-dashboard-station-admin.png](prototype/02-dashboard-station-admin.png)
+
+- กดสถานีใน `StationRail` หรือในกราฟเทียบรายสถานี แล้วหน้าสลับเป็นมุมมองสถานีนั้น
+  (เดิมกดแล้วแค่ไฮไลต์ แผงซ้ายไม่เปลี่ยน) กด "ภาพรวมทั้งหมด" เพื่อกลับ
+- ชนิดข้อมูลใหม่ใน `src/api/dashboard.ts`: `CyclePoint`, `DefectEvent`,
+  `StationDetail` (ต่อยอดจาก `StationDefect`) และฟิลด์ `stationDetails` ใน `DashboardSummary`
+- `StationKpiRow` — KPI 4 ใบคนละชุดกับภาพรวม (ตรวจพบวันนี้, อัตราผิดปกติ,
+  cycle time เฉลี่ย, เวลามาตรฐาน ± ช่วงที่ยอมรับ)
+- `CycleTimeChart` — แท่ง cycle time รายรอบ + เส้นประเวลามาตรฐาน
+  ระบายแดงเฉพาะรอบที่หลุดช่วง และสรุปจำนวนรอบที่หลุดไว้ใต้กราฟ
+- `DefectEventList` — เหตุการณ์แยกชิ้นงานวันนี้ (เวลา · หมายเลขชิ้น · ปัญหา · ความมั่นใจ)
+- `isOutOfCycleTolerance` ใน `src/lib/threshold.ts` — เกณฑ์ cycle time อยู่ที่เดียวกับ
+  เกณฑ์อัตราของเสีย ชนขอบพอดีนับว่าหลุด (ตาม mockup และกันปัญหาทศนิยม binary)
+- `stationDetails` ใน `MOCK_DASHBOARD` ตั้งใจใส่แค่ st-03 กับ st-05 ไม่ครบทุกสถานี
+  เพื่อให้เทสต์ครอบคลุมกรณีเลือกสถานีที่ยังไม่มีรายละเอียดด้วย
+
 ### เทสต์
 
-`npx tsc -b`, `npm run lint`, `npm test` ผ่านทั้งหมด — 12 ไฟล์ 63 เทสต์
+`npx tsc -b`, `npm run lint`, `npm test` ผ่านทั้งหมด — 15 ไฟล์ 84 เทสต์
 
 ## รอทำต่อ
 

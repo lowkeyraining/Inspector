@@ -126,10 +126,31 @@ export const stationRail = {
   empty: 'px-2 py-3 text-center text-xs text-ink-muted',
 } as const
 
+export const cycleTimeChart = {
+  box: 'h-56',
+  caption: 'mt-2 text-xs text-ink-muted',
+  captionDot: 'mr-1.5 inline-block size-2 rounded-full bg-alert',
+} as const
+
+export const defectEventList = {
+  list: 'space-y-2',
+  row: 'flex items-center gap-2 rounded-lg bg-alert-soft px-3 py-2 text-sm',
+  badge:
+    'shrink-0 rounded-full bg-alert px-2 py-0.5 text-[10px] font-semibold leading-tight text-surface',
+  text: 'min-w-0 flex-1 truncate text-alert',
+  confidence: 'shrink-0 font-medium text-alert tabular-nums',
+  empty: 'rounded-lg bg-subtle px-3 py-6 text-center text-sm text-ink-muted',
+} as const
+
 export const dashboard = {
   main: 'grid gap-6 p-6 lg:grid-cols-[1fr_260px]',
   content: 'min-w-0 space-y-6',
-  toolbar: 'flex justify-end',
+  toolbar: 'flex items-center justify-between gap-4',
+  stationChip:
+    'rounded-full bg-brand px-4 py-1.5 text-sm font-medium text-surface',
+  stationGrid: 'grid gap-6 lg:grid-cols-[2fr_1fr]',
+  waitingPanel:
+    'grid place-items-center rounded-xl border border-dashed border-brand-border bg-surface p-12 text-center text-sm text-ink-muted',
   panelGrid: 'grid gap-6 lg:grid-cols-[2fr_1fr]',
   sideColumn: 'space-y-6',
   panel: 'rounded-xl border border-line bg-surface p-4 shadow-sm',
