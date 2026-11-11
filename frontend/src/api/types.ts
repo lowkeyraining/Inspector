@@ -1,3 +1,5 @@
+// ชนิดข้อมูลที่ backend ของกล้องส่งกลับมา
+
 /** type ตรงกับ JSON ที่ backend ส่งมา (ดู backend/app/camera.py: get_status) */
 
 export type Detection = {

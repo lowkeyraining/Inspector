@@ -1,3 +1,5 @@
+// ตัวกลางเรียก backend — ประกอบ base URL และโยน error เมื่อสถานะไม่ใช่ 2xx
+
 /** base URL: ใช้ VITE_API_URL ถ้ากำหนดไว้ ไม่งั้นยิงผ่าน proxy ของ vite ที่ /api */
 const BASE_URL = (import.meta.env.VITE_API_URL ?? '/api').replace(/\/$/, '')
 

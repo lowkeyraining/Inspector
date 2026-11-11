@@ -1,3 +1,5 @@
+// ตั้งค่ากลางของ TanStack Query
+
 import { QueryClient } from '@tanstack/react-query'
 
 export const queryClient = new QueryClient({

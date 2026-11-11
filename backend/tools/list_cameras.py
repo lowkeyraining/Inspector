@@ -1,3 +1,5 @@
+# ไล่หาว่ากล้องหมายเลขไหนเสียบอยู่บ้าง เอาเลขที่ได้ไปตั้ง CAMERA_SOURCE
+# รันจากที่ไหนก็ได้: python backend/tools/list_cameras.py
 import cv2
 
 for i in range(5):                                  # ลองกล้องหมายเลข 0 ถึง 4

@@ -1,3 +1,5 @@
+// กราฟเส้น FPS ย้อนหลังของกล้อง
+
 import {
   CartesianGrid,
   Line,
@@ -8,6 +10,8 @@ import {
   YAxis,
 } from 'recharts'
 import type { FpsPoint } from '../hooks/useFpsHistory'
+import { chartBox } from '../lib/styles'
+import { chartColors } from '../lib/theme'
 
 type Props = {
   data: FpsPoint[]
@@ -15,13 +19,13 @@ type Props = {
 
 export default function FpsChart({ data }: Props) {
   return (
-    <div className="h-40">
+    <div className={chartBox}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
-          <CartesianGrid stroke="#1e293b" vertical={false} />
+          <CartesianGrid stroke={chartColors.grid} vertical={false} />
           <XAxis dataKey="t" hide />
           <YAxis
-            stroke="#64748b"
+            stroke={chartColors.axis}
             fontSize={12}
             width={32}
             tickLine={false}
@@ -30,8 +34,8 @@ export default function FpsChart({ data }: Props) {
           />
           <Tooltip
             contentStyle={{
-              background: '#0f172a',
-              border: '1px solid #1e293b',
+              background: chartColors.surface,
+              border: `1px solid ${chartColors.grid}`,
               borderRadius: 8,
               fontSize: 12,
             }}
@@ -41,7 +45,7 @@ export default function FpsChart({ data }: Props) {
           <Line
             type="monotone"
             dataKey="fps"
-            stroke="#38bdf8"
+            stroke={chartColors.series}
             strokeWidth={2}
             dot={false}
             isAnimationActive={false}

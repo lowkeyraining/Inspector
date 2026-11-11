@@ -1,11 +1,18 @@
-import cv2
+# ดูผลตรวจจับของโมเดลบนภาพสด — รันมือเพื่อเช็คว่าโมเดลยังทำงาน ไม่ใช่ unit test
+# รันจากที่ไหนก็ได้: python backend/tools/preview_yolo.py   (กด q เพื่อออก)
 import time
+from pathlib import Path
+
+import cv2
 from ultralytics import YOLO
 
 CAMERA_INDEX = 1
 CONF_THRESHOLD = 0.5
 
-model = YOLO("yolo26n.pt")
+# อิงจากตำแหน่งไฟล์นี้ ไม่ใช่ working directory จะได้รันจากโฟลเดอร์ไหนก็เจอโมเดล
+MODEL_PATH = Path(__file__).resolve().parent.parent / "yolo26n.pt"
+
+model = YOLO(MODEL_PATH)
 
 cap = cv2.VideoCapture(CAMERA_INDEX, cv2.CAP_DSHOW)
 if not cap.isOpened():

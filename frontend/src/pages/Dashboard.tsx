@@ -1,60 +1,172 @@
-import ClassCountChart from '../components/ClassCountChart'
-import DetectionTable from '../components/DetectionTable'
-import FpsChart from '../components/FpsChart'
-import LiveStream from '../components/LiveStream'
-import StatCard from '../components/StatCard'
-import { useFpsHistory } from '../hooks/useFpsHistory'
-import { useHealth } from '../hooks/useHealth'
+// หน้า Dashboard — ภาพรวมทั้งไลน์ หรือเจาะลงสถานีเดียวเมื่อเลือกจาก rail
+
+import { useState } from 'react'
+import CycleTimeChart from '../components/CycleTimeChart'
+import DateStepper from '../components/DateStepper'
+import DefectEventList from '../components/DefectEventList'
+import DefectRatioGauge from '../components/DefectRatioGauge'
+import DefectTypeDonut from '../components/DefectTypeDonut'
+import KpiRow from '../components/KpiRow'
+import StationDefectChart from '../components/StationDefectChart'
+import StationKpiRow from '../components/StationKpiRow'
+import StationRail from '../components/StationRail'
+import WeeklyTrendChart from '../components/WeeklyTrendChart'
+import { hasDashboardData, useDashboard } from '../hooks/useDashboard'
+import { cycleRange, stationOrder } from '../lib/format'
+import { dashboard as s } from '../lib/styles'
 
 export default function Dashboard() {
-  const { data, error, dataUpdatedAt } = useHealth()
-  const fpsHistory = useFpsHistory(data?.fps, dataUpdatedAt)
+  const { data, isLoading, error } = useDashboard()
+  const connected = hasDashboardData(data)
 
-  const detections = data?.detections ?? []
-  const classCount = new Set(detections.map((d) => d.class)).size
+  // null = ภาพรวมทั้งไลน์ ถ้ามีค่าแปลว่าเจาะลงสถานีนั้น
+  const [selectedStationId, setSelectedStationId] = useState<string | null>(null)
+  const [date, setDate] = useState(() => new Date())
 
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <header className="border-b border-slate-800 px-6 py-4">
-        <h1 className="text-xl font-semibold">Inspector</h1>
-        <p className="text-sm text-slate-400">
-          ระบบติดตามกระบวนการผลิตแบบเรียลไทม์ด้วยหลักการคอมพิวเตอร์วิทัศน์
-        </p>
-      </header>
-
-      {error && (
-        <p className="border-b border-rose-900/50 bg-rose-950/40 px-6 py-2 text-sm text-rose-300">
-          ต่อ backend ไม่ได้ — {error.message}
-        </p>
-      )}
-
-      <main className="grid gap-6 p-6 lg:grid-cols-[2fr_1fr]">
-        <div className="space-y-6">
-          <div className="grid grid-cols-3 gap-4">
-            <StatCard label="FPS" value={data ? data.fps.toFixed(1) : '-'} />
-            <StatCard label="วัตถุที่ตรวจเจอ" value={detections.length} unit="ชิ้น" />
-            <StatCard label="จำนวนคลาส" value={classCount} />
+  if (isLoading || !data) {
+    // แสดงโครงการ์ดเปล่าไว้ก่อน ไม่ให้ layout กระโดดตอนข้อมูลมาถึง
+    return (
+      <main className={s.main}>
+        <div className={s.content}>
+          <div className={s.skeletonKpi}>
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className={s.skeletonCard} />
+            ))}
           </div>
-          <LiveStream source={data?.source} fps={data?.fps} />
-        </div>
-
-        <div className="space-y-6">
-          <section className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-            <h2 className="mb-3 text-sm font-medium text-slate-300">FPS ย้อนหลัง</h2>
-            <FpsChart data={fpsHistory} />
-          </section>
-
-          <section className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-            <h2 className="mb-3 text-sm font-medium text-slate-300">จำนวนตามคลาส</h2>
-            <ClassCountChart detections={detections} />
-          </section>
-
-          <section className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-            <h2 className="mb-3 text-sm font-medium text-slate-300">รายการที่ตรวจเจอ</h2>
-            <DetectionTable detections={detections} />
-          </section>
+          <div className={s.skeletonPanels}>
+            <div className={s.skeletonPanelTall} />
+            <div className={s.skeletonPanelTall} />
+          </div>
         </div>
       </main>
+    )
+  }
+
+  if (error) {
+    return (
+      <main className={s.main}>
+        <p className={s.errorBanner}>โหลดข้อมูล Dashboard ไม่ได้ — {error.message}</p>
+      </main>
+    )
+  }
+
+  // สถานีที่เลือกอาจยังไม่มีรายละเอียด — แยกสองตัวแปรไว้ จะได้บอกต่างกันระหว่าง
+  // "ไม่ได้เลือกสถานี" (ภาพรวม) กับ "เลือกแล้วแต่ข้อมูลยังไม่มา" (ขึ้นสถานะรอ)
+  const selectedStation = selectedStationId
+    ? data.stations.find((st) => st.id === selectedStationId)
+    : undefined
+  const detail = selectedStationId
+    ? data.stationDetails.find((st) => st.id === selectedStationId)
+    : undefined
+
+  const toolbar = (
+    <div className={s.toolbar}>
+      {selectedStation ? (
+        <span className={s.stationChip}>
+          Station {stationOrder(selectedStation.order)} — {selectedStation.name}
+        </span>
+      ) : (
+        <span />
+      )}
+      <DateStepper value={date} onChange={setDate} />
     </div>
+  )
+
+  if (selectedStationId) {
+    return (
+      <main className={s.main}>
+        <div className={s.content}>
+          {toolbar}
+
+          {detail ? (
+            <>
+              <StationKpiRow station={detail} />
+
+              <div className={s.stationGrid}>
+                <section className={s.panel}>
+                  <h2 className={s.panelTitle}>
+                    Cycle time รายรอบ — เทียบเวลามาตรฐาน{' '}
+                    {cycleRange(detail.standardCycleTime, detail.cycleTolerance)} วิ
+                  </h2>
+                  <CycleTimeChart
+                    cycles={detail.cycles}
+                    standard={detail.standardCycleTime}
+                    tolerance={detail.cycleTolerance}
+                  />
+                </section>
+
+                <section className={s.panel}>
+                  <h2 className={s.panelTitle}>
+                    เหตุการณ์แยกชิ้นงานวันนี้ ({detail.events.length})
+                  </h2>
+                  <DefectEventList events={detail.events} />
+                </section>
+              </div>
+            </>
+          ) : (
+            <p className={s.waitingPanel}>
+              ยังไม่มีข้อมูลรายละเอียดของสถานีนี้ — กด "ภาพรวมทั้งหมด" เพื่อกลับไปดูทั้งไลน์
+            </p>
+          )}
+        </div>
+
+        <StationRail
+          stations={data.stations}
+          avgDefectRate={data.avgDefectRate}
+          selectedId={selectedStationId}
+          onSelect={setSelectedStationId}
+        />
+      </main>
+    )
+  }
+
+  return (
+    <main className={s.main}>
+      <div className={s.content}>
+        {toolbar}
+
+        <KpiRow summary={connected ? data : null} />
+
+        <div className={s.panelGrid}>
+          <section className={s.panel}>
+            <h2 className={s.panelTitle}>
+              เปรียบเทียบอัตราการตรวจพบชิ้นบกพร่องตาม Station
+            </h2>
+            <StationDefectChart
+              stations={data.stations}
+              selectedId={selectedStationId ?? undefined}
+              onSelect={setSelectedStationId}
+            />
+          </section>
+
+          <div className={s.sideColumn}>
+            <section className={s.panel}>
+              <h2 className={s.panelTitle}>ประเภทปัญหาที่พบบ่อย</h2>
+              <DefectTypeDonut types={data.defectTypes} />
+            </section>
+
+            <section className={s.panel}>
+              <h2 className={s.panelTitle}>สัดส่วนของเสียรวม</h2>
+              <DefectRatioGauge
+              defectRate={connected ? data.avgDefectRate : null}
+              total={connected ? data.producedToday : null}
+            />
+            </section>
+
+            <section className={s.panel}>
+              <h2 className={s.panelTitle}>แนวโน้มรายสัปดาห์</h2>
+              <WeeklyTrendChart points={data.weekly} />
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <StationRail
+        stations={data.stations}
+        avgDefectRate={data.avgDefectRate}
+        selectedId={selectedStationId}
+        onSelect={setSelectedStationId}
+      />
+    </main>
   )
 }

@@ -1,5 +1,8 @@
-import cv2
+# ดูภาพสดจากกล้อง + FPS — รันมือเพื่อเช็คว่ากล้องยังใช้ได้ ไม่ใช่ unit test
+# รันจากที่ไหนก็ได้: python backend/tools/preview_camera.py   (กด q เพื่อออก)
 import time
+
+import cv2
 
 CAMERA_INDEX = 1
 
