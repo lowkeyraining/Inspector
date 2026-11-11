@@ -13,7 +13,7 @@ backend/            FastAPI + OpenCV + ultralytics (YOLO)
   app/camera.py     เธรดอ่านกล้อง ตรวจจับ และเก็บเฟรม/ผลล่าสุดไว้ให้ API หยิบ
   app/main.py       endpoint: GET /health, GET /stream (MJPEG)
   app/config.py     ค่าตั้งทั้งหมดอ่านจาก environment variable
-  *_test.py         สคริปต์ลองกล้อง/โมเดลแยกจากแอป (รันมือ ไม่ใช่ unit test)
+  tools/            สคริปต์รันมือ แยกจากแอป ไม่ใช่ unit test (ดูหัวไฟล์แต่ละตัว)
 
 frontend/           React 19 + TypeScript + Vite + Tailwind 4 + TanStack Query + Recharts
   src/api/          ตัวกลางเรียก backend และชนิดข้อมูล
@@ -23,7 +23,13 @@ frontend/           React 19 + TypeScript + Vite + Tailwind 4 + TanStack Query +
   src/lib/          styles.ts (className ทุกตัว), theme.ts (สีให้กราฟ), ค่าตั้งอื่น ๆ
   src/__tests__/    vitest + @testing-library/react
 
-docs/               เอกสาร — ดู docs/progress.md สำหรับสถานะงาน
+docs/               เอกสาร
+  progress.md       สถานะงาน ทำแล้ว/รอทำต่อ
+  milestones.md     M1–M8 และลำดับการทำ
+  prototype/        ภาพออกแบบหน้าจอ 20 หน้า (ดู prototype/README.md เป็นสารบัญ)
+  prompts/          พรอมต์ที่ใช้สั่งงานแต่ละรอบ
+
+scripts/            สคริปต์ระดับโปรเจกต์ (สร้าง Milestones บน GitHub)
 ```
 
 ## วิธีรัน
