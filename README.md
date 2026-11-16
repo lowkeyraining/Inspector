@@ -31,7 +31,6 @@ docs/               เอกสาร
   prototype/        ภาพออกแบบหน้าจอ 20 หน้า (ดู prototype/README.md เป็นสารบัญ)
   prompts/          พรอมต์ที่ใช้สั่งงานแต่ละรอบ (backend-context.md = พรอมต์ร่วมฝั่ง backend)
 
-scripts/            สคริปต์ระดับโปรเจกต์ (สร้าง Milestones บน GitHub)
 data/               ภาพ snapshot และไฟล์ข้อมูลที่โตเรื่อย ๆ (ไม่เข้า Git)
 
 docker-compose.yml  Postgres สำหรับ dev

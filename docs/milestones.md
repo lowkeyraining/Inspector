@@ -1,7 +1,6 @@
 # Milestones
 
-สร้างบน GitHub ด้วย `powershell -ExecutionPolicy Bypass -File scripts\create-milestones.ps1`
-(ต้องมี gh และ `gh auth login` แล้ว — รันซ้ำได้ ถ้ามี milestone ชื่อเดิมอยู่แล้วจะข้าม)
+Milestones ถูกสร้างบน GitHub แล้ว ตารางนี้เก็บไว้เป็นขอบเขตงานอ้างอิง
 
 | # | Milestone | ขอบเขต |
 |---|-----------|--------|
