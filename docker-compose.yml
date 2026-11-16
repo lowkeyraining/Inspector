@@ -1,0 +1,30 @@
+# ฐานข้อมูลสำหรับ dev — รันแค่ Postgres ส่วนแอปยังรันบนเครื่องตรง ๆ
+# ใช้ alpine เพราะเล็กกว่าตัวเต็มประมาณครึ่ง และโปรเจกต์นี้ไม่ได้ใช้ extension พิเศษ
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: inspector-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-inspector}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-inspector}
+      POSTGRES_DB: ${POSTGRES_DB:-inspector}
+      # ให้เวลาใน DB เป็น UTC เสมอ แล้วไปแปลงเป็นเวลาไทยที่ชั้นแสดงผล
+      TZ: UTC
+      PGTZ: UTC
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      # named volume ไม่ใช่ bind mount มายัง D: เพราะ initdb ตั้ง permission
+      # บนไดรฟ์ Windows ที่ mount เข้า container ไม่ได้ (drvfs) แล้ว container จะไม่ขึ้น
+      # ถ้าจะให้ไฟล์ไปอยู่ D: ให้ย้ายที่เก็บของ Docker ทั้งก้อน (ดู README)
+      - inspector-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # ให้ alembic/แอปรอได้ว่า DB พร้อมรับ connection จริง ไม่ใช่แค่ container ขึ้น
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-inspector} -d ${POSTGRES_DB:-inspector}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  inspector-pgdata:

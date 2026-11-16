@@ -2,3 +2,11 @@ fastapi
 uvicorn[standard]
 opencv-python
 ultralytics
+
+# ฐานข้อมูล
+sqlalchemy>=2.0
+alembic>=1.13
+psycopg[binary]>=3.2
+
+# เทสต์
+pytest

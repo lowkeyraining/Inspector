@@ -5,7 +5,7 @@
 
 | # | Milestone | ขอบเขต |
 |---|-----------|--------|
-| M1 | ฐานข้อมูลและบันทึกผลตรวจจับ | PostgreSQL + migration, บันทึก NG + snapshot, นับชิ้นงาน/cycle time |
+| M1 | ฐานข้อมูลและบันทึกผลตรวจจับ | PostgreSQL (Docker) + SQLAlchemy + Alembic, บันทึก NG + snapshot, นับชิ้นงาน/cycle time |
 | M2 | หลายกล้อง + หน้า Device / Monitor | API กล้อง + RTSP, worker ต่อกล้อง, หน้า Device, Monitor แบบกริด |
 | M3 | จัดการ Station | Station CRUD, หน้ารายการ/รายละเอียด/แก้ไข |
 | M4 | เทรนและจัดการโมเดล | คลาส + รูป, Suggestion, เทรนเบื้องหลัง, ทดสอบ, เปลี่ยนเวอร์ชัน, wizard |
