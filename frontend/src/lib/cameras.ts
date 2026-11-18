@@ -20,11 +20,15 @@ export type CameraConfig = {
 }
 
 /**
- * ยังไม่มีกล้องในระบบ — Monitor จะแสดง empty state
- * เพิ่มกล้องได้โดยใส่ object ตาม CameraConfig เช่น
- *   { id: 'cam-1', name: 'กล้อง 1', location: 'สายการผลิตหลัก', streamPath: '/stream' }
+ * ตอนนี้มีกล้องตัวเดียวเท่าที่ backend เปิด stream ไว้
+ * streamPath ต่อท้าย base URL ของ client.ts เอง ('/api' ผ่าน proxy ของ vite)
+ * จึงเขียน path ฝั่ง backend ตรง ๆ ไม่ต้องใส่ /api นำหน้า
+ *
+ * ลิสต์ว่างได้ Monitor จะขึ้น empty state แทน
  */
-export const CAMERAS: CameraConfig[] = []
+export const CAMERAS: CameraConfig[] = [
+  { id: 'cam-1', name: 'กล้อง 1', location: 'สายการผลิตหลัก', streamPath: '/stream' },
+]
 
 export function findCamera(id: string): CameraConfig | undefined {
   return CAMERAS.find((c) => c.id === id)
