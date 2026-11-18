@@ -16,12 +16,21 @@ import { cycleRange, stationOrder } from '../lib/format'
 import { dashboard as s } from '../lib/styles'
 
 export default function Dashboard() {
-  const { data, isLoading, error } = useDashboard()
-  const connected = hasDashboardData(data)
-
   // null = ภาพรวมทั้งไลน์ ถ้ามีค่าแปลว่าเจาะลงสถานีนั้น
   const [selectedStationId, setSelectedStationId] = useState<string | null>(null)
   const [date, setDate] = useState(() => new Date())
+
+  const { data, isLoading, error } = useDashboard(date)
+  const connected = hasDashboardData(data)
+
+  // เช็ก error ก่อน — ไม่งั้น backend ล่มแล้ว data เป็น undefined จะค้างที่โครงการ์ดตลอด
+  if (error && !data) {
+    return (
+      <main className={s.main}>
+        <p className={s.errorBanner}>โหลดข้อมูล Dashboard ไม่ได้ — {error.message}</p>
+      </main>
+    )
+  }
 
   if (isLoading || !data) {
     // แสดงโครงการ์ดเปล่าไว้ก่อน ไม่ให้ layout กระโดดตอนข้อมูลมาถึง
@@ -42,13 +51,6 @@ export default function Dashboard() {
     )
   }
 
-  if (error) {
-    return (
-      <main className={s.main}>
-        <p className={s.errorBanner}>โหลดข้อมูล Dashboard ไม่ได้ — {error.message}</p>
-      </main>
-    )
-  }
 
   // สถานีที่เลือกอาจยังไม่มีรายละเอียด — แยกสองตัวแปรไว้ จะได้บอกต่างกันระหว่าง
   // "ไม่ได้เลือกสถานี" (ภาพรวม) กับ "เลือกแล้วแต่ข้อมูลยังไม่มา" (ขึ้นสถานะรอ)

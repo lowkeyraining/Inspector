@@ -1,19 +1,31 @@
-// hook ดึงข้อมูลหน้า Dashboard — ยังไม่ได้เชื่อม backend จึงคืนค่าเปล่า
+// hook ดึงข้อมูลหน้า Dashboard จาก backend (GET /dashboard?date=YYYY-MM-DD)
 
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { apiFetch } from '../api/client'
 import type { DashboardSummary } from '../api/dashboard'
-import { EMPTY_DASHBOARD } from '../lib/emptyDashboard'
+
+/** โพลซ้ำทุก 30 วิ ให้ตัวเลขของวันนี้ขยับตามกล้องโดยไม่ต้องรีเฟรชหน้า */
+const REFRESH_MS = 30_000
 
 /**
- * ยังไม่มี endpoint ของ Dashboard บน backend
- * ตอนนี้คืนค่าเปล่าเพื่อให้การ์ดขึ้นโครงรอข้อมูลจริง
- * เมื่อ backend พร้อม ให้เปลี่ยนแค่ queryFn ที่นี่ที่เดียว หน้าและการ์ดไม่ต้องแก้
- *   queryFn: () => apiFetch<DashboardSummary>('/dashboard')
+ * แปลง Date เป็น "YYYY-MM-DD" ตามเวลาเครื่อง
+ * ห้ามใช้ toISOString() เพราะแปลงเป็น UTC ก่อน ช่วง 00:00–06:59 เวลาไทยจะได้วันก่อนหน้า
  */
-export function useDashboard() {
+export function toApiDate(date: Date): string {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+export function useDashboard(date: Date) {
+  const day = toApiDate(date)
   return useQuery<DashboardSummary>({
-    queryKey: ['dashboard'],
-    queryFn: async () => EMPTY_DASHBOARD,
+    queryKey: ['dashboard', day],
+    queryFn: () => apiFetch<DashboardSummary>(`/dashboard?date=${day}`),
+    refetchInterval: REFRESH_MS,
+    // เปลี่ยนวันแล้วโชว์ข้อมูลวันเดิมค้างไว้จนวันใหม่มาถึง ไม่ให้การ์ดกระพริบเป็นโครงเปล่า
+    placeholderData: keepPreviousData,
   })
 }
 

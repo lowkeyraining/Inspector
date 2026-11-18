@@ -133,7 +133,9 @@ export const cycleTimeChart = {
 } as const
 
 export const defectEventList = {
-  list: 'space-y-2',
+  // ตรึงความสูงแล้วให้เลื่อนในกรอบ — วันจริงสถานีเดียวมี NG ได้หลายร้อยชิ้น
+  // ถ้าปล่อยไหลยาว หน้าจะสูงเป็นหมื่นพิกเซลและการ์ดข้าง ๆ ถูกดันจนหาไม่เจอ
+  list: 'max-h-80 space-y-2 overflow-y-auto pr-1',
   row: 'flex items-center gap-2 rounded-lg bg-alert-soft px-3 py-2 text-sm',
   badge:
     'shrink-0 rounded-full bg-alert px-2 py-0.5 text-[10px] font-semibold leading-tight text-surface',
