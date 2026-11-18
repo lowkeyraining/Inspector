@@ -169,6 +169,8 @@ export const cameraFeed = {
   placeholder:
     'flex w-full flex-col items-center justify-center gap-1 bg-subtle text-sm text-ink-muted',
   placeholderHint: 'text-xs',
+  retry:
+    'mt-2 rounded-full border border-line bg-surface px-3 py-1 text-xs text-ink transition-colors hover:border-brand-border',
 } as const
 
 export const cameraTile = {

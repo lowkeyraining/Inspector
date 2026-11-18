@@ -1,7 +1,7 @@
 // เทส CameraFeed — URL ของ stream และ placeholder เมื่อโหลดไม่ขึ้น
 
-import { fireEvent, render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { act, fireEvent, render, screen } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import CameraFeed from '../components/CameraFeed'
 import { testCamera } from './fixtures'
 
@@ -31,4 +31,32 @@ describe('CameraFeed', () => {
 
     expect(screen.getByRole('img')).toBeInTheDocument()
   })
+
+  it('กดลองเชื่อมต่อใหม่แล้วเปิด stream เส้นใหม่ ไม่ใช้ URL เดิมซ้ำ', () => {
+    render(<CameraFeed camera={testCamera} />)
+    fireEvent.error(screen.getByRole('img'))
+
+    fireEvent.click(screen.getByRole('button', { name: 'ลองเชื่อมต่อใหม่' }))
+
+    // URL ต้องต่างจากรอบแรก ไม่งั้นเบราว์เซอร์อาจหยิบ connection ที่ตายแล้วมาใช้ซ้ำ
+    expect(screen.getByRole('img')).toHaveAttribute('src', '/api/stream?retry=1')
+  })
+
+  it('ต่อใหม่ให้เองเมื่อเวลาผ่านไป ไม่ต้องรอคนกด', () => {
+    // รีสตาร์ต backend ทีเดียวภาพจะค้างถาวรถ้าไม่มีตัวลองใหม่อัตโนมัติ
+    vi.useFakeTimers()
+    render(<CameraFeed camera={testCamera} />)
+    fireEvent.error(screen.getByRole('img'))
+    expect(screen.queryByRole('img')).not.toBeInTheDocument()
+
+    act(() => {
+      vi.advanceTimersByTime(5000)
+    })
+
+    expect(screen.getByRole('img')).toHaveAttribute('src', '/api/stream?retry=1')
+  })
+})
+
+afterEach(() => {
+  vi.useRealTimers()
 })
